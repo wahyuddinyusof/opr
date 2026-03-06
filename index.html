@@ -308,7 +308,7 @@
     gap: 12px;
   }
 
-  .opr-header img { height: 52px; filter: brightness(0) invert(1); }
+  .opr-header img { height: 52px; background: white; padding: 4px 8px; border-radius: 4px; }
 
   .opr-header-text {
     text-align: center;
@@ -699,7 +699,7 @@
         </tr>
         <tr><td>Tempat</td><td id="prev-tempat">—</td></tr>
         <tr><td>Bilangan Peserta</td><td id="prev-peserta">—</td></tr>
-        <tr><td>Pegawai Bertgj.</td><td id="prev-pegawai">—</td></tr>
+        <tr><td>Pegawai Bertanggungjawab</td><td id="prev-pegawai">—</td></tr>
       </table>
 
       <!-- Sections -->
@@ -898,7 +898,7 @@ Jawab dalam format JSON sahaja seperti berikut, tiada markdown, tiada teks lain:
       if (provider === 'gemini') {
         // ===== GEMINI API =====
         const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${apiKey}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
