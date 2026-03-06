@@ -116,8 +116,8 @@
     background: white;
   }
 
-  .field textarea { min-height: 70px; }
-  .field textarea.short { min-height: 50px; }
+  .field textarea { min-height: 100px; }
+  .field textarea.short { min-height: 100px; }
 
   .hint {
     font-size: 10px;
@@ -508,21 +508,6 @@
   <!-- FORM PANEL -->
   <div class="form-panel">
 
-    <!-- API Key -->
-    <div class="section-title">🔑 API Key</div>
-    <div class="field">
-      <label>Pilih AI</label>
-      <select id="aiProvider" onchange="updateKeyPlaceholder()" style="width:100%;border:1.5px solid var(--border);border-radius:6px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:13px;background:#fafbfd;color:var(--text);">
-        <option value="gemini">Google Gemini (Percuma)</option>
-        <option value="claude">Claude Anthropic (Berbayar)</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Masukkan API Key</label>
-      <input type="password" id="apiKey" placeholder="AIzaSy..." />
-      <div class="hint">Key disimpan dalam browser anda sahaja. Tidak dihantar ke mana-mana.</div>
-    </div>
-
     <!-- Maklumat Asas -->
     <div class="section-title">📋 Maklumat Program</div>
 
@@ -568,28 +553,28 @@
 
     <div class="field">
       <label>Objektif Program</label>
-      <textarea id="objektif" class="short" placeholder="cth: tingkat kemahiran excel, dedah fungsi pivot table, persedia staf untuk kerja analisis data"></textarea>
-      <div class="hint">Taip point ringkas — AI akan jana ayat formal</div>
+      <textarea id="objektif" placeholder="cth: tingkat kemahiran excel, dedah fungsi pivot table, persedia staf untuk kerja analisis data"></textarea>
+      <div class="hint">Taip point ringkas — AI jana ayat formal. Angka kekal seperti asal (cth: 35 kekal 35).</div>
     </div>
 
     <div class="field">
       <label>Pelaksanaan / Aktiviti</label>
-      <textarea id="pelaksanaan" class="short" placeholder="cth: slot teori pagi, bengkel praktikal ptg, ujian akhir hari ke-2, penceramah dari industri"></textarea>
+      <textarea id="pelaksanaan" placeholder="cth: slot teori pagi, bengkel praktikal ptg, ujian akhir hari ke-2, penceramah dari industri"></textarea>
     </div>
 
     <div class="field">
       <label>Dapatan / Pencapaian</label>
-      <textarea id="dapatan" class="short" placeholder="cth: 95% peserta lulus ujian, maklum balas positif, peserta aktif terlibat, objektif tercapai"></textarea>
+      <textarea id="dapatan" placeholder="cth: 95% peserta lulus ujian, maklum balas positif, peserta aktif terlibat, objektif tercapai"></textarea>
     </div>
 
     <div class="field">
       <label>Cabaran / Pemerhatian</label>
-      <textarea id="cabaran" class="short" placeholder="cth: bilik sempit, wifi lambat, sesetengah peserta kurang asas komputer"></textarea>
+      <textarea id="cabaran" placeholder="cth: bilik sempit, wifi lambat, sesetengah peserta kurang asas komputer"></textarea>
     </div>
 
     <div class="field">
       <label>Cadangan / Tindakan Susulan</label>
-      <textarea id="cadangan" class="short" placeholder="cth: tambah sesi lanjutan, upgrade bilik latihan, sediakan modul asas untuk peserta baru"></textarea>
+      <textarea id="cadangan" placeholder="cth: tambah sesi lanjutan, upgrade bilik latihan, sediakan modul asas untuk peserta baru"></textarea>
     </div>
 
     <!-- Photos -->
@@ -666,7 +651,11 @@
     <div class="preview-toolbar">
       <button class="btn-print" onclick="window.print()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        Print / Simpan PDF
+        Print / PDF
+      </button>
+      <button class="btn-print" onclick="downloadWord()" style="background:#2b579a;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Download Word
       </button>
       <div class="status-msg">
         <div class="spinner" id="spinner"></div>
@@ -837,21 +826,11 @@
     el.classList.remove('empty');
   }
 
-  function updateKeyPlaceholder() {
-    const provider = document.getElementById('aiProvider').value;
-    const input = document.getElementById('apiKey');
-    input.placeholder = provider === 'gemini' ? 'AIzaSy...' : 'sk-ant-api03-...';
-  }
+  function updateKeyPlaceholder() {}
+
+  const CLAUDE_KEY = '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';
 
   async function generateAI() {
-    const apiKey = document.getElementById('apiKey').value.trim();
-    const provider = document.getElementById('aiProvider').value;
-
-    if (!apiKey) {
-      alert('Sila masukkan API Key terlebih dahulu.');
-      return;
-    }
-
     const get = id => document.getElementById(id).value.trim();
     const nama = get('namaProgram');
     const tarikh = get('tarikh');
@@ -881,59 +860,42 @@ Maklumat program:
 - Bilangan Peserta: ${peserta}
 - Anjuran/Unit: ${anjuran}
 
-Tugas anda: Tulis ayat-ayat formal dan profesional untuk setiap bahagian laporan berdasarkan point-point berikut. Setiap bahagian mestilah 2-3 ayat yang lengkap dan menggunakan bahasa rasmi.
+PERATURAN PENTING:
+1. Semua angka MESTI dikekalkan dalam bentuk nombor (cth: 35, 92%, 2 hari) — JANGAN tukar kepada perkataan
+2. Setiap bahagian mestilah 2-3 ayat ringkas dan padat sahaja — ini adalah One Page Report
+3. Gunakan bahasa rasmi Bahasa Malaysia yang formal
 
-OBJEKTIF PROGRAM (point): ${objektif || 'tiada'}
-PELAKSANAAN/AKTIVITI (point): ${pelaksanaan || 'tiada'}
-DAPATAN/PENCAPAIAN (point): ${dapatan || 'tiada'}
-CABARAN/PEMERHATIAN (point): ${cabaran || 'tiada'}
-CADANGAN/TINDAKAN SUSULAN (point): ${cadangan || 'tiada'}
+Tulis ayat formal untuk setiap bahagian berdasarkan point berikut:
 
-Jawab dalam format JSON sahaja seperti berikut, tiada markdown, tiada teks lain:
+OBJEKTIF PROGRAM: ${objektif || 'tiada'}
+PELAKSANAAN/AKTIVITI: ${pelaksanaan || 'tiada'}
+DAPATAN/PENCAPAIAN: ${dapatan || 'tiada'}
+CABARAN/PEMERHATIAN: ${cabaran || 'tiada'}
+CADANGAN/TINDAKAN SUSULAN: ${cadangan || 'tiada'}
+
+Jawab dalam format JSON sahaja, tiada markdown, tiada teks lain:
 {"objektif":"ayat formal","pelaksanaan":"ayat formal","dapatan":"ayat formal","cabaran":"ayat formal","cadangan":"ayat formal"}`;
 
     try {
-      let resultText = '';
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': CLAUDE_KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
 
-      if (provider === 'gemini') {
-        // ===== GEMINI API =====
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.7, maxOutputTokens: 1000 }
-            })
-          }
-        );
-        const data = await res.json();
-        if (data.error) { setStatus('Ralat Gemini: ' + data.error.message); btn.disabled = false; return; }
-        resultText = data.candidates[0].content.parts[0].text;
+      const data = await res.json();
+      if (data.error) { setStatus('Ralat: ' + data.error.message); btn.disabled = false; return; }
 
-      } else {
-        // ===== CLAUDE API =====
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true'
-          },
-          body: JSON.stringify({
-            model: 'claude-haiku-4-5-20251001',
-            max_tokens: 1000,
-            messages: [{ role: 'user', content: prompt }]
-          })
-        });
-        const data = await res.json();
-        if (data.error) { setStatus('Ralat Claude: ' + data.error.message); btn.disabled = false; return; }
-        resultText = data.content[0].text;
-      }
-
-      const raw = resultText.replace(/```json|```/g, '').trim();
+      const raw = data.content[0].text.replace(/```json|```/g, '').trim();
       const result = JSON.parse(raw);
 
       if (result.objektif && objektif) setSectionContent('prev-objektif', result.objektif);
@@ -943,13 +905,99 @@ Jawab dalam format JSON sahaja seperti berikut, tiada markdown, tiada teks lain:
       if (result.cadangan && cadangan) setSectionContent('prev-cadangan', result.cadangan);
 
       updatePreview();
-      setStatus('✅ Ayat berjaya dijana! Semak preview dan Print.');
+      setStatus('✅ Ayat berjaya dijana! Semak dan edit jika perlu, kemudian Print.');
 
     } catch(err) {
       setStatus('Ralat: ' + err.message);
     }
 
     btn.disabled = false;
+  }
+
+  function downloadWord() {
+    const get = id => document.getElementById(id).textContent.trim();
+    const nama = document.getElementById('prev-nama').textContent;
+    const anjuran = document.getElementById('prev-anjuran').textContent;
+    const tarikh = document.getElementById('prev-tarikh').textContent;
+    const tempat = document.getElementById('prev-tempat').textContent;
+    const peserta = document.getElementById('prev-peserta').textContent;
+    const pegawai = document.getElementById('prev-pegawai').textContent;
+    const objektif = document.getElementById('prev-objektif').textContent;
+    const pelaksanaan = document.getElementById('prev-pelaksanaan').textContent;
+    const dapatan = document.getElementById('prev-dapatan').textContent;
+    const cabaran = document.getElementById('prev-cabaran').textContent;
+    const cadangan = document.getElementById('prev-cadangan').textContent;
+    const sign1n = document.getElementById('prev-sign1name').textContent;
+    const sign1p = document.getElementById('prev-sign1post').textContent;
+    const sign2n = document.getElementById('prev-sign2name').textContent;
+    const sign2p = document.getElementById('prev-sign2post').textContent;
+
+    const html = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>OPR</title>
+<style>
+  body { font-family: Arial, sans-serif; font-size: 11pt; margin: 2cm; }
+  h1 { text-align: center; font-size: 14pt; border: 2px solid #1a2f5e; padding: 8px; color: #1a2f5e; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+  td { border: 1px solid #aaa; padding: 6px 10px; font-size: 10.5pt; }
+  td:first-child { font-weight: bold; background: #eef0f8; width: 35%; }
+  .section-head { background: #1a2f5e; color: white; font-weight: bold; font-size: 10pt; padding: 5px 10px; }
+  .section-body { padding: 8px 10px; border: 1px solid #aaa; border-top: none; min-height: 30px; }
+  .footer { display: flex; justify-content: space-between; margin-top: 20px; }
+  .sign-block { width: 45%; }
+  .sign-label { font-size: 9pt; color: #666; text-transform: uppercase; }
+  .sign-line { border-bottom: 1px dotted #333; margin: 25px 0 4px; }
+  .sign-name { font-weight: bold; font-size: 10pt; }
+  .sign-post { font-size: 9pt; color: #666; }
+</style>
+</head>
+<body>
+<p style="text-align:center;font-size:9pt;color:#666;">ADTEC JTM KAMPUS KUANTAN | KOLEJ TEKNOLOGI TERMAJU JABATAN TENAGA MANUSIA</p>
+<h1>ONE PAGE REPORT (OPR)</h1>
+<table>
+  <tr><td>Nama Program</td><td>${nama}</td></tr>
+  <tr><td>Anjuran / Unit</td><td>${anjuran}</td></tr>
+  <tr><td>Tarikh &amp; Masa</td><td>${tarikh}</td></tr>
+  <tr><td>Tempat</td><td>${tempat}</td></tr>
+  <tr><td>Bilangan Peserta</td><td>${peserta}</td></tr>
+  <tr><td>Pegawai Bertanggungjawab</td><td>${pegawai}</td></tr>
+</table>
+<div class="section-head">1. OBJEKTIF PROGRAM</div>
+<div class="section-body">${objektif}</div>
+<div class="section-head">2. PELAKSANAAN / AKTIVITI</div>
+<div class="section-body">${pelaksanaan}</div>
+<div class="section-head">3. DAPATAN / PENCAPAIAN</div>
+<div class="section-body">${dapatan}</div>
+<div class="section-head">4. CABARAN / PEMERHATIAN</div>
+<div class="section-body">${cabaran}</div>
+<div class="section-head">5. CADANGAN / TINDAKAN SUSULAN</div>
+<div class="section-body">${cadangan}</div>
+<br>
+<table style="border:none;">
+  <tr>
+    <td style="border:none;width:50%;vertical-align:top;">
+      <div class="sign-label">Disediakan oleh</div>
+      <div class="sign-line"></div>
+      <div class="sign-name">${sign1n}</div>
+      <div class="sign-post">${sign1p}</div>
+    </td>
+    <td style="border:none;width:50%;vertical-align:top;">
+      <div class="sign-label">Disahkan oleh</div>
+      <div class="sign-line"></div>
+      <div class="sign-name">${sign2n}</div>
+      <div class="sign-post">${sign2p}</div>
+    </td>
+  </tr>
+</table>
+</body></html>`;
+
+    const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'OPR_' + (nama || 'Laporan') + '.doc';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   // Init
